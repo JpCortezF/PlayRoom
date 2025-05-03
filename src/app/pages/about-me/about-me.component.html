@@ -1,1 +1,46 @@
-<p>about-me works!</p>
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="bg-gray-800 bg-opacity-70 rounded-xl shadow-2xl p-8 max-w-4xl w-full">   
+    <div class="flex flex-col md:flex-row items-center gap-8">       
+      <div class="flex-shrink-0">
+        @if (isLoading) {
+          <div class="w-32 h-32 rounded-full bg-gray-700 animate-pulse"></div>
+        }
+        @else if (userData) {
+          <img src="about-me-photo.jpg" alt="Foto de perfil" class="w-64 h-64 rounded-full object-cover border-4 border-blue-500">
+        }
+      </div>
+        
+      <div class="flex-grow text-white">
+        @if (isLoading) {
+          <div class="space-y-4">
+            <div class="h-8 bg-gray-700 rounded animate-pulse w-3/4"></div>
+            <div class="h-4 bg-gray-700 rounded animate-pulse w-full"></div>
+            <div class="h-4 bg-gray-700 rounded animate-pulse w-5/6"></div>
+          </div>
+        }
+        @else if (userData) {
+          <div class="space-y-4">
+            <h1 class="text-3xl font-bold text-blue-400 mb-2">
+              {{ userData.name }}
+            </h1>
+            <a href="https://www.instagram.com/codeutnfra/" target="_blank">
+              <p class="text-gray-300 whitespace-pre-line hover:underline">
+                {{ userData.bio }}
+              </p>
+            </a>
+            <div class="flex items-center gap-2 mt-4">
+              <img [src]="userData.avatar_url" alt="Mini avatar" class="w-8 h-8 rounded-full">
+              <a href="https://github.com/JpCortezF" target="_blank"><span class="text-gray-400 hover:underline">{{ userData.login }}</span></a>
+            </div>
+          </div>
+        }
+        @else if (error) {
+          <p class="text-red-400">Error al cargar los datos de GitHub</p>
+        }
+      </div>
+    </div>
+    <div class="mt-8 pt-4 border-t border-gray-700 text-center text-gray-400">
+      Todavía no tengo mi propio juego creado.
+    </div>
+  </div>
+</div>

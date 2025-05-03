@@ -12,4 +12,5 @@ import { FooterComponent } from './components/general-components/footer/footer.c
 })
 export class AppComponent {
   title = 'gameroom';
+  
 }

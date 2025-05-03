@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 @Component({
@@ -8,5 +9,22 @@ import { Component } from '@angular/core';
   styleUrl: './about-me.component.css'
 })
 export class AboutMeComponent {
+  userData: any;
+  isLoading = true;
+  error = false;
 
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.http.get('https://api.github.com/users/JpCortezF').subscribe({
+      next: (data) => {
+        this.userData = data;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.isLoading = false;
+      }
+    });
+  }
 }

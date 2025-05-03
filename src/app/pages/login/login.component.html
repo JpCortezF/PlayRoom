@@ -1,1 +1,41 @@
-<p>login works!</p>
+<div class="flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-md bg-gray-800 rounded-2xl p-8 shadow-lg backdrop-blur-sm">
+    <h1 class="text-3xl font-bold text-white text-center mb-12 relative pb-2">
+      Iniciar sesión
+      <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-red-500 rounded-full"></span>
+    </h1>
+    <div class="space-y-6">
+      <!-- Email -->
+      <div class="flex items-center bg-gray-700 rounded px-2 py-1 transition-all duration-300 focus-within:ring-2 focus-within:ring-red-500">
+        <i class="fas fa-envelope text-red-500 mr-3"></i>
+        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" class="w-full bg-transparent text-white placeholder-gray-400 outline-none border-0">
+      </div>
+      <!-- Password -->
+      <div class="flex items-center bg-gray-700 rounded px-2 py-1 transition-all duration-300 focus-within:ring-2 focus-within:ring-red-500">
+        <i class="fas fa-lock text-red-500 mr-3"></i>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" class="w-full bg-transparent text-white placeholder-gray-400 outline-none border-0">
+      </div>
+      @if (errorMessages.password) {
+        <p class="text-red-500 text-sm">{{ errorMessages.password }}</p>
+      }
+      @if (errorMessages.general) {
+        <p class="text-red-500 text-center">{{ errorMessages.general }}</p>
+      }
+      <a class="block text-gray-400 text-xs text-left hover:text-white transition-colors cursor-pointer">
+        ¿HAS OLVIDADO TU CONTRASEÑA?
+      </a>
+      <!-- Buttons -->
+      <div class="flex justify-center space-x-3 pt-4">
+        <button (click)="Login()" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">
+          Iniciar sesión
+        </button>
+      </div>
+      <div class="text-center pt-4">
+        <span class="text-gray-300 text-sm">¿No tienes cuenta?</span>
+        <a routerLink="/register" class="ml-2 text-red-400 hover:text-white cursor-pointer transition-colors">
+          CREAR UNA
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
