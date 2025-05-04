@@ -24,6 +24,8 @@ export class LoginComponent {
   };
 
   Login(){
+    if (!this.validateForm()) return;
+
     this.authService.login(this.email, this.password).then((data) => {
       if (data.error) {
         this.handleLoginError(data.error);
@@ -33,6 +35,20 @@ export class LoginComponent {
       this.errorMessages.general = 'Error durante el login. Intente nuevamente.';
     });
     ;
+  }
+
+  validateForm(): boolean {
+    this.resetErrors();
+    
+    if (!this.email) {
+      this.errorMessages.email = 'Email requerido';
+      return false;
+    }
+    if (!this.password) {
+      this.errorMessages.password = 'Ingrese una contraseña';
+      return false;
+    }
+    return true;
   }
 
   resetErrors() {
