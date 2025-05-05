@@ -1,26 +1,90 @@
-<div id="animation-carousel" class="relative w-full" data-carousel="static">
+<div id="animation-carousel" class="relative w-full rounded-xl overflow-hidden 
+    shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)]
+    bg-gray-900/90 border border-gray-700/50" 
+    data-carousel="slide" data-carousel-interval="7000">
+    
     <!-- Carousel wrapper -->
-    <div class="relative h-56 overflow-hidden md:h-96">
-         <!-- Item 1 -->
+    <div class="relative h-64 md:h-[29rem] overflow-hidden">
+        <!-- Item 1 -->
         <div class="hidden duration-1000 absolute inset-0 transition-all transform translate-x-0 z-20 ease-in-out" data-carousel-item>
-            <img src="higher-lower-carousel.webp" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-end">
+                <img src="preguntados-home.webp"
+                    class="absolute w-full h-full object-cover -z-10"
+                    alt="Preguntados">
+                <div class="text-center mb-2 md:mb-4 max-w-2xl">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        Preguntados
+                    </h2>
+                    <button routerLink="/games/preguntados" class="px-4 py-1 md:px-6 md:py-2 bg-blue-900 hover:bg-blue-600 text-white font-semibold rounded-lg 
+                                transition-all duration-300 transform hover:scale-105 shadow-lg
+                                text-lg md:text-xl opacity-70">
+                        Jugar ahora
+                    </button>
+                </div>
+            </div>
         </div>
-        <!-- Item 2 -->
-        <div class="hidden duration-200 ease-linear" data-carousel-item>
-            <img src="higher-lower-carousel.webp" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        
+        <!-- Item 2  -->
+        <div class="hidden duration-1000 absolute inset-0 transition-all transform translate-x-0 z-20 ease-in-out" data-carousel-item>
+            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-end">
+                <img src="higher-lower-home.webp"
+                    class="absolute w-full h-full object-cover -z-10"
+                    alt="Mayor o menor">
+                <div class="text-center mb-2 md:mb-4 max-w-2xl">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        Mayor o Menor
+                    </h2>
+                    <button routerLink="/games/mayor-menor" class="px-4 py-1 md:px-6 md:py-2 bg-blue-900 hover:bg-blue-600 text-white font-semibold rounded-lg 
+                                transition-all duration-300 transform hover:scale-105 shadow-lg
+                                text-lg md:text-xl opacity-70">
+                        Jugar ahora
+                    </button>
+                </div>
+            </div>
         </div>
+        
         <!-- Item 3 -->
-        <div class="hidden duration-200 ease-linear" data-carousel-item>
-            <img src="higher-lower-carousel.webp" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        <div class="hidden duration-1000 absolute inset-0 transition-all transform translate-x-0 z-20 ease-in-out" data-carousel-item>
+            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-end">
+                <img src="ahorcado-home.webp"
+                    class="absolute w-full h-full object-cover -z-10"
+                    alt="Ahorcado">
+                <div class="text-center mb-2 md:mb-4 max-w-2xl">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        Ahorcado
+                    </h2>
+                    <button routerLink="/games/ahorcado" class="px-4 py-1 md:px-6 md:py-2 bg-blue-900 hover:bg-blue-600 text-white font-semibold rounded-lg 
+                                transition-all duration-300 transform hover:scale-105 shadow-lg
+                                text-lg md:text-xl opacity-70">
+                        Jugar ahora
+                    </button>
+                </div>
+            </div>
         </div>
+        
         <!-- Item 4 -->
-        <div class="hidden duration-200 ease-linear" data-carousel-item>
-            <img src="higher-lower-carousel.webp" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        <div class="hidden duration-1000 absolute inset-0 transition-all transform translate-x-0 z-20 ease-in-out" data-carousel-item>
+            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-end">
+                <img src="preguntados-home.webp"
+                    class="absolute w-full h-full object-cover -z-10"
+                    alt="Juego Propio">
+                <div class="text-center mb-2 md:mb-4 max-w-2xl">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                        Juego Propio
+                    </h2>
+                    <button class="px-4 py-1 md:px-6 md:py-2 bg-blue-900 hover:bg-blue-600 text-white font-semibold rounded-lg 
+                                transition-all duration-300 transform hover:scale-105 shadow-lg
+                                text-lg md:text-xl opacity-70">
+                        Jugar ahora
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
+    
     <!-- Slider controls -->
     <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-600 group-hover:bg-gray-400 group-focus:ring-4">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/80 group-hover:bg-gray-700/90 group-focus:ring-4 group-focus:ring-gray-800/50">
             <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
             </svg>
@@ -28,7 +92,7 @@
         </span>
     </button>
     <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-600 group-hover:bg-gray-400 group-focus:ring-4">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/80 group-hover:bg-gray-700/90 group-focus:ring-4 group-focus:ring-gray-800/50">
             <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
             </svg>

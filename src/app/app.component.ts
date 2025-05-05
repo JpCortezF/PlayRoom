@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./components/general-components/navbar/navbar.component";
 import { FooterComponent } from './components/general-components/footer/footer.component';
@@ -12,5 +12,6 @@ import { FooterComponent } from './components/general-components/footer/footer.c
 })
 export class AppComponent {
   title = 'gameroom';
-  
+  @Output() imageUrl: string = 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//playroom_icon.png';
+  @Output() userImageUrl: string = 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//user_icon.png';
 }

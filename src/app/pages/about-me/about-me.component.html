@@ -3,7 +3,9 @@
     <div class="flex flex-col md:flex-row items-center gap-8">       
       <div class="flex-shrink-0">
         @if (isLoading) {
-          <div class="w-32 h-32 rounded-full bg-gray-700 animate-pulse"></div>
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         }
         @else if (userData) {
           <img src="about_me_photo.jpg" alt="Foto de perfil" class="w-64 h-64 rounded-full object-cover border-4 border-blue-500">

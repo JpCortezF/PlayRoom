@@ -1,7 +1,7 @@
 <nav class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 drop-shadow-2xl">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
     <a routerLink="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-      <img src="playroom_icon.png" class="h-8" alt="Logo" />
+      <img [src]="imageUrl" class="h-10" alt="Logo" />
       <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">PlayRoom</span>
     </a>
 
@@ -11,7 +11,7 @@
         <a routerLink="/login" class="hidden md:block py-2 px-3 text-white hover:text-gray-100 bg-transparent hover:bg-gray-600 focus:outline-none focus:ring-gray-800 rounded-lg">Iniciar Sesión</a>
       }@else {
         <button (click)="logout()" class="hidden md:block py-2 px-3 text-white hover:text-gray-300 bg-transparent hover:bg-gray-600 focus:outline-none focus:ring-gray-800 rounded-lg">Salir</button>
-        <img class="w-8 h-8 rounded-full cursor-pointer" src="user_icon.png" alt="user photo">
+        <img class="w-8 h-8 rounded-full cursor-pointer" [src]="userImageUrl" alt="user photo">
       }     
       <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
         <span class="sr-only">Open main menu</span>

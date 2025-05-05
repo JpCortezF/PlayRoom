@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './cards.component.css'
 })
 export class CardsComponent {
-  @Input() imageUrl: string = '';
-  @Input() gameName: string = '';
-  @Input() gameRoute: string = '';
+  @Input() imageUrl!: string;
+  @Input() gameName!: string;
+  @Input() gameRoute!: string;
 }

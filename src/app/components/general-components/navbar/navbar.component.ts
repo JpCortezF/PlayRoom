@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { AuthService } from '../../../services/auth.service';
@@ -13,6 +13,8 @@ import { AuthService } from '../../../services/auth.service';
 export class NavbarComponent {
   authService = inject(AuthService);
   router = inject(Router);
+  @Input() imageUrl!: string;
+  @Input() userImageUrl!: string;
 
   ngOnInit(): void {
     initFlowbite();
