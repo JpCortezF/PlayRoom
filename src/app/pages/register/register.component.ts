@@ -24,7 +24,7 @@ export class RegisterComponent {
     name: '',
     last_name: '',
     age: null as number | null,
-    avatar_url: 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//user_icon.png'
+    auth_id: ''
   }
 
   errorMessages = {
@@ -50,11 +50,11 @@ export class RegisterComponent {
         throw response.error;
       }
       return this.dbService.createUser({
+        auth_id: response.data.user?.id,
         username: this.userData.username,
         name: this.userData.name,
         last_name: this.userData.last_name,
         age: this.userData.age || 0,
-        avatar_url: this.userData.avatar_url
       });
     })
     .then(() => {
@@ -66,7 +66,7 @@ export class RegisterComponent {
     })
     .finally(() => {
       this.isLoading = false;
-    }); 
+    });
   }
   
 

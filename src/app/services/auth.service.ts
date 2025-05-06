@@ -2,13 +2,15 @@ import { inject, Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { User } from '@supabase/supabase-js';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   sb = inject(SupabaseService);
-  currentUser: User | null = null;
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
   router = inject(Router);
   
   constructor() { 
@@ -18,12 +20,11 @@ export class AuthService {
 
   private async initializeAuth() {
     const { data: { session } } = await this.sb.supabase.auth.getSession();
-    this.currentUser = session?.user || null;
-
-    // Escuchar cambios futuros
+    this.currentUserSubject.next(session?.user || null);
+  
     this.sb.supabase.auth.onAuthStateChange((event, session) => {
-      this.currentUser = session?.user || null;
-      if (this.currentUser) {
+      this.currentUserSubject.next(session?.user || null);
+      if (session?.user) {
         this.router.navigate(['/']);
       }
     });

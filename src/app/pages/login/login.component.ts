@@ -23,6 +23,12 @@ export class LoginComponent {
     general: ''
   };
 
+  quickLogin(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+    this.Login();
+  }
+  
   Login(){
     if (!this.validateForm()) return;
 

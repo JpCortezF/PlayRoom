@@ -4,11 +4,12 @@ import { initFlowbite } from 'flowbite';
 import { AuthService } from '../../../services/auth.service';
 import { DatabaseService } from '../../../services/database.service';
 import { SupabaseService } from '../../../services/supabase.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -28,35 +29,32 @@ export class NavbarComponent {
     username: '',
     name: '',
     initials: 'US'
-  }
+  } 
   
   isDropdownOpen = false;
 
   async ngOnInit(): Promise<void> {
     initFlowbite();
-    try {
-      const userEmail = await this.getUserEmail();
+    this.authService.currentUser$.subscribe(async (user) => {
+      if (!user) {
+        return;
+      }
       
-      if (userEmail) {
-        const emailSplit = userEmail?.split('@')[0] || '';
-        const user = await this.dbService.getUserByUsername(emailSplit);
-        if (user) {
+      try {
+        const emailSplit = user.email?.split('@')[0] || '';
+        const userFromDb = await this.dbService.getUserByUsername(emailSplit);
+        if (userFromDb) {
           this.userloggedIn = {
-            username: user.username || emailSplit,
-            avatar_url: user.avatar_url,
-            name: user.name || '',
-            initials: this.getInitials(user.name)
+            username: userFromDb.username || emailSplit,
+            avatar_url: userFromDb.avatar_url,
+            name: userFromDb.name || '',
+            initials: this.getInitials(userFromDb.name)
           };
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  }
-
-  private async getUserEmail(): Promise<string | null> {
-    const { data: { session } } = await this.sb.supabase.auth.getSession();
-    return session?.user.email || null;
+    });
   }
 
   async logout() {
@@ -64,7 +62,7 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
-  getInitials(name: string | undefined): string {
+  public getInitials(name: string | undefined): string {
     if (!name) return 'US';
     // Elimina espacios extras y divide por palabras
     const words = name?.trim().split(/\s+/);
