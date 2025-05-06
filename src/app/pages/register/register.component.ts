@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { DatabaseService } from '../../services/database.service';
 
 @Component({
   selector: 'app-register',
@@ -14,75 +15,89 @@ import { Router, RouterLink } from '@angular/router';
 export class RegisterComponent {
   authService = inject(AuthService);
   router = inject(Router);
-  newUserMail: string = "";
-  newUserPass: string = "";
+  dbService = inject(DatabaseService);
+
+  userData = {
+    email: '',
+    password: '',
+    username: '',
+    name: '',
+    last_name: '',
+    age: null as number | null,
+    avatar_url: 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//user_icon.png'
+  }
+
   errorMessages = {
     email: '',
     password: '',
+    name: '',
+    last_name: '',
+    age: '',
     general: ''
   };
+  isLoading = false;
 
   Register() {
-    if (!this.validateForm()) return;
-  
-    this.authService.register(this.newUserMail, this.newUserPass)
-      .then((response) => {
-        if (response.error) {
-          this.handleRegistrationError(response.error);
-        } else {
-          this.router.navigate(['/']);
-        }
-      })
-      .catch((error) => {
-        console.error('Error inesperado:', error);
-        this.errorMessages.general = 'Error durante el registro. Intente nuevamente.';
+    this.validateForm();
+    if (this.hasErrors()) return;
+
+    this.isLoading = true;
+    this.errorMessages.general = '';
+    this.userData.username = this.userData.email.split('@')[0];
+
+    this.authService.register(this.userData.email, this.userData.password).then((response) => {
+      if(response.error){
+        throw response.error;
+      }
+      return this.dbService.createUser({
+        username: this.userData.username,
+        name: this.userData.name,
+        last_name: this.userData.last_name,
+        age: this.userData.age || 0,
+        avatar_url: this.userData.avatar_url
       });
+    })
+    .then(() => {
+      this.router.navigate(['/']);
+    })
+    .catch((error) => {
+      this.errorMessages.general = this.getAuthErrorMessage(error);
+      console.error('Registration error:', error);
+    })
+    .finally(() => {
+      this.isLoading = false;
+    }); 
   }
   
 
-  validateForm(): boolean {
-    this.resetErrors();
-    
-    if (!this.newUserMail) {
-      this.errorMessages.email = 'Email requerido';
-      return false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.newUserMail)) {
-      this.errorMessages.email = 'Ingrese un mail válido';
-      return false;
-    }
-
-    if (!this.newUserPass) {
-      this.errorMessages.password = 'Contraseña requerida';
-      return false;
-    } else if (this.newUserPass.length < 6) {
-      this.errorMessages.password = 'Mínimo 6 caracteres';
-      return false;
-    }
-
-    return true;
-  }
-
-  resetErrors() {
+  validateForm() {
     this.errorMessages = {
-      email: '',
-      password: '',
+      email: !this.userData.email ? 'El email es requerido' : 
+             !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.userData.email) ? 'Email inválido' : '',
+      password: !this.userData.password ? 'La contraseña es requerida' : 
+                this.userData.password.length < 6 ? 'Mínimo 6 caracteres' : '',
+      name: !this.userData.name ? 'El nombre es requerido' : 
+            !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(this.userData.name) ? 'Solo letras permitidas' : '',
+      last_name: !this.userData.last_name ? 'El apellido es requerido' : 
+                 !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(this.userData.last_name) ? 'Solo letras permitidas' : '',
+      age: !this.userData.age ? 'La edad es requerida' : 
+           this.userData.age < 13 ? 'Debes tener al menos 13 años' : 
+           this.userData.age > 120 ? 'Edad inválida' : '',
       general: ''
     };
   }
 
-  private handleRegistrationError(error: any) {
-    
-    this.resetErrors();
-  
-    if (error.message.includes('User already registered') || 
-        error.message.includes('Email already in use')) {
-      this.errorMessages.email = 'El email ya está registrado';
-    } else if (error.message.includes('Password should be at least')) {
-      this.errorMessages.password = 'La contraseña debe tener al menos 6 caracteres';
-    } else if (error.message.includes('Invalid email')) {
-      this.errorMessages.email = 'Formato de email inválido';
-    } else {
-      this.errorMessages.general = error.message || 'Error durante el registro';
+  hasErrors(): boolean {
+    return Object.values(this.errorMessages).some(msg => msg !== '');
+  }
+
+  private getAuthErrorMessage(error: any): string {
+    if (error.message.includes('User already registered')) {
+      return 'El email ya está registrado';
     }
+    if (error.message.includes('Password should be at least')) {
+      return 'La contraseña debe tener al menos 6 caracteres';
+    }
+    return 'Error en el registro. Intenta nuevamente.';
   }
 }

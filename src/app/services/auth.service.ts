@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async register(email: string, password: string) {
-    const { data, error } = await this.sb.supabase.auth.signUp({ email, password   });
+    const { data, error } = await this.sb.supabase.auth.signUp({ email, password });
     return { data, error };
   }
 

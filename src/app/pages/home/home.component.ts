@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardsComponent, CarouselComponent, CommonModule],
+  imports: [CardsComponent, CarouselComponent,CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

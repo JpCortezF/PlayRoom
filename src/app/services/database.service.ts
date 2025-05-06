@@ -23,8 +23,18 @@ export class DatabaseService {
     return data ? new User(data) : null;
   }
 
-  async createUser(user: Partial<User>): Promise<User | null> {
-    const { data } = await this.sb.supabase.from('users').insert(user).select().single();
+  async getUserByUsername(email: string): Promise<User | null> {
+    const { data } = await this.sb.supabase.from('users').select('*').eq('username', email).single();
+    return data ? new User(data) : null;
+  }
+
+  async createUser(userData: Partial<User>): Promise<User | null> {
+    const { data, error } = await this.sb.supabase.from('users')
+      .insert(userData)
+      .select()
+      .single();
+  
+    if (error) throw error;
     return data ? new User(data) : null;
   }
 
