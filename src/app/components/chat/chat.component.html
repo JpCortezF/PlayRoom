@@ -51,25 +51,31 @@
     </div>
 
     <!-- Input del mensaje -->
-    <div class="flex items-center border-t p-2 bg-gray-50">
-      <textarea
-        [(ngModel)]="message"
-        (keydown.enter)="sendMessage()"
-        class="flex-1 resize-none border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring focus:border-blue-300"
-        rows="1"
-        placeholder="Escribe un mensaje..."
-      ></textarea>
-      <button
-        (click)="sendMessage()"
-        class="ml-2 text-blue-500 hover:text-blue-700 p-2 rounded-full"
-        title="Enviar"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </button>
+    <div class="p-4 border-t border-gray-200">
+      <!-- Mensaje del sistema para no logueados -->
+      <div *ngIf="!currentUser" class="flex justify-center mb-2">
+        <div class="bg-gray-200 rounded-lg px-3 py-2 text-gray-800 max-w-[80%] text-center text-xs">
+          Debes tener una cuenta para unirte a la comunidad!
+        </div>
+      </div>  
+      <div class="flex items-center gap-2">
+        <input 
+          [(ngModel)]="message" 
+          (keydown.enter)="sendMessage()"
+          [disabled]="!currentUser"
+          placeholder="Escribe un mensaje..."
+          class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
+        <button 
+          (click)="sendMessage()"
+          [disabled]="!currentUser"
+          class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
