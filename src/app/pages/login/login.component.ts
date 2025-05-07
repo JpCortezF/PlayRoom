@@ -26,6 +26,7 @@ export class LoginComponent {
   quickLogin(email: string, password: string) {
     this.email = email;
     this.password = password;
+
     this.Login();
   }
   

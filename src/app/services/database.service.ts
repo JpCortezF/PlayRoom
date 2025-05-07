@@ -38,16 +38,6 @@ export class DatabaseService {
     return data ? new User(data) : null;
   }
 
-  async updateUser(id: number, updates: Partial<User>): Promise<User | null> {
-    const { data } = await this.sb.supabase.from('users').update(updates).eq('id', id).select().single();
-    return data ? new User(data) : null;
-  }
-
-  async deleteUser(id: number): Promise<boolean> {
-    const { error } = await this.sb.supabase.from('users').delete().eq('id', id);
-    return !error;
-  }
-
   // ==================== GAMES ====================
   async getAllGames(): Promise<GameType[]> {
     if (this.gamesCache) return this.gamesCache;
@@ -65,16 +55,6 @@ export class DatabaseService {
   async createGame(game: Partial<GameType>): Promise<GameType | null> {
     const { data } = await this.sb.supabase.from('game_types').insert(game).select().single();
     return data ? new GameType(data) : null;
-  }
-
-  async updateGame(id: number, updates: Partial<GameType>): Promise<GameType | null> {
-    const { data } = await this.sb.supabase.from('game_types').update(updates).eq('id', id).select().single();
-    return data ? new GameType(data) : null;
-  }
-
-  async deleteGame(id: number): Promise<boolean> {
-    const { error } = await this.sb.supabase.from('game_types').delete().eq('id', id);
-    return !error;
   }
 
   // ==================== SCORES ====================
@@ -98,25 +78,25 @@ export class DatabaseService {
     return data ? new UserScore(data) : null;
   }
 
-  async deleteScore(id: number): Promise<boolean> {
-    const { error } = await this.sb.supabase.from('user_scores').delete().eq('id', id);
-    return !error;
-  }
-
   // ==================== CHAT ====================
-  async getAllMessages(): Promise<ChatMessage[]> {
-    const { data } = await this.sb.supabase.from('chat_messages').select('*');
-    return data?.map(m => new ChatMessage(m)) || [];
+  async getMessages() {
+    const { data, error } = await this.sb.supabase.from('chat_messages').select('*').order('created_at', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
   }
 
-  async createMessage(message: Partial<ChatMessage>): Promise<ChatMessage | null> {
-    const { data } = await this.sb.supabase.from('chat_messages').insert(message).select().single();
-    return data ? new ChatMessage(data) : null;
-  }
+  async sendUserMessage(userId: string, username: string, messageText: string) {
+    const { data, error } = await this.sb.supabase.from('chat_messages')
+      .insert({
+        user_id: userId,
+        username: username,
+        message: messageText,
+        is_system_message: false
+      }).select().single();
 
-  async deleteMessage(id: number): Promise<boolean> {
-    const { error } = await this.sb.supabase.from('chat_messages').delete().eq('id', id);
-    return !error;
+    if (error) throw error;
+    return data;
   }
 
   async getTopScores(limit = 10): Promise<UserScore[]> {

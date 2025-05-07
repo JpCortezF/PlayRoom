@@ -1,10 +1,12 @@
 import { Component, inject, Input } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { AuthService } from '../../../services/auth.service';
 import { DatabaseService } from '../../../services/database.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -18,6 +20,7 @@ export class NavbarComponent {
   sb = inject(SupabaseService);
   router = inject(Router);
   dbService = inject(DatabaseService);
+  userService = inject(UserService);
   @Input() iconUrl!: string; 
 
   userloggedIn: {
@@ -35,11 +38,21 @@ export class NavbarComponent {
 
   async ngOnInit(): Promise<void> {
     initFlowbite();
+  
+    // para que Flowbite funcione tras navegar
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      setTimeout(() => {
+        initFlowbite();
+      }, 100);
+    });
+  
     this.authService.currentUser$.subscribe(async (user) => {
       if (!user) {
         return;
       }
-      
+  
       try {
         const emailSplit = user.email?.split('@')[0] || '';
         const userFromDb = await this.dbService.getUserByUsername(emailSplit);
@@ -50,9 +63,10 @@ export class NavbarComponent {
             name: userFromDb.name || '',
             initials: this.getInitials(userFromDb.name)
           };
+          this.userService.setCurrentUser(this.userloggedIn);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error al obtener el nombre de usuario:', error);
       }
     });
   }

@@ -4,11 +4,12 @@ import { CarouselComponent } from "../../components/home-components/carousel/car
 import { DatabaseService } from "../../services/database.service";
 import { GameType } from '../../classes/game_type';
 import { CommonModule } from '@angular/common';
+import { ChatComponent } from "../../components/chat/chat.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardsComponent, CarouselComponent,CommonModule],
+  imports: [CardsComponent, CarouselComponent, CommonModule, ChatComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
