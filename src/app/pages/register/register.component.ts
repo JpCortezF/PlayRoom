@@ -55,6 +55,7 @@ export class RegisterComponent {
         name: this.userData.name,
         last_name: this.userData.last_name,
         age: this.userData.age || 0,
+        initials: this.getInitials(this.userData.name),
       });
     })
     .then(() => {
@@ -99,5 +100,13 @@ export class RegisterComponent {
       return 'La contraseña debe tener al menos 6 caracteres';
     }
     return 'Error en el registro. Intenta nuevamente.';
+  }
+
+  private getInitials(name: string): string {
+    if (!name) return 'US';
+    const parts = name.split(' ');
+    return parts.length >= 2 
+      ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+      : `${name.substring(0, 2)}`.toUpperCase();
   }
 }

@@ -6,7 +6,6 @@ import { DatabaseService } from '../../../services/database.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +19,6 @@ export class NavbarComponent {
   sb = inject(SupabaseService);
   router = inject(Router);
   dbService = inject(DatabaseService);
-  userService = inject(UserService);
   @Input() iconUrl!: string; 
 
   userloggedIn: {
@@ -59,11 +57,9 @@ export class NavbarComponent {
         if (userFromDb) {
           this.userloggedIn = {
             username: userFromDb.username || emailSplit,
-            avatar_url: userFromDb.avatar_url,
             name: userFromDb.name || '',
-            initials: this.getInitials(userFromDb.name)
+            initials: userFromDb.initials || 'US',
           };
-          this.userService.setCurrentUser(this.userloggedIn);
         }
       } catch (error) {
         console.error('Error al obtener el nombre de usuario:', error);

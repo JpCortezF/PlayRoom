@@ -25,31 +25,23 @@
           <a routerLink="/about-me" class="block py-2 px-3 text-white hover:text-gray-300 rounded-lg hover:bg-gray-700">Quien soy</a>
         </li>
 
-        <!-- Autenticación -->
+        <!-- Avatar -->
           <li *ngIf="(authService.currentUser$ | async) === null">
             <a routerLink="/login" class="block py-2 px-3 text-white hover:text-gray-300 rounded-lg hover:bg-gray-700">
               Iniciar Sesión
             </a>
           </li>
           <li *ngIf="(authService.currentUser$ | async) as user" class="relative">
-            <!-- Avatar + Flechita en línea -->
             <button id="userDropdownButton" 
                     data-dropdown-toggle="userDropdown"
                     class="flex items-center gap-1 py-1 px-2 text-white rounded-lg hover:bg-gray-700 focus:outline-none group">
               
-              <!-- Avatar o iniciales -->
-              @if(userloggedIn.avatar_url) {
-                <img class="w-8 h-8 rounded-full" 
-                     [src]="userloggedIn.avatar_url" 
-                     alt="Avatar de {{ userloggedIn.username }}">
-              } @else {
-                <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                  <span class="text-sm font-medium text-gray-300">
-                    {{ userloggedIn.initials }}
-                  </span>
-                </div>
-              }
-          
+              <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
+                <span class="text-sm font-medium text-gray-300">
+                  {{ userloggedIn.initials }}
+                </span>
+              </div>
+                        
               <svg class="w-3 h-3 text-white transition-transform duration-200 group-data-[dropdown-open=true]:rotate-180" 
                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4"/>

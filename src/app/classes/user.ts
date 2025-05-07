@@ -5,7 +5,7 @@ export class User {
   name?: string;
   last_name?: string;
   age?: number;
-  avatar_url?: string;
+  initials?: string;
 
   constructor(data: Partial<User> = {}) {
     this.id = data.id || 0;
@@ -14,6 +14,6 @@ export class User {
     this.name = data.name || '';
     this.last_name = data.last_name || '';
     this.age = data.age || 0;
-    this.avatar_url = data.avatar_url;
+    this.initials = data.initials;
   }
 }

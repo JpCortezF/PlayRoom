@@ -80,23 +80,43 @@ export class DatabaseService {
 
   // ==================== CHAT ====================
   async getMessages() {
-    const { data, error } = await this.sb.supabase.from('chat_messages').select('*').order('created_at', { ascending: true });
+    const { data, error } = await this.sb.supabase
+      .from('chat_messages')
+      .select(`
+        id,
+        user_id,
+        message,
+        created_at,
+        users:user_id (
+          username,
+          initials
+        )
+      `)
+      .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    return data?.map(m => new ChatMessage(m)) || [];    
   }
 
-  async sendUserMessage(userId: string, username: string, messageText: string) {
-    const { data, error } = await this.sb.supabase.from('chat_messages')
-      .insert({
-        user_id: userId,
-        username: username,
-        message: messageText,
-        is_system_message: false
-      }).select().single();
-
+  async sendUserMessage(userId: string, messageText: string): Promise<ChatMessage> {
+    const { data, error } = await this.sb.supabase
+      .from('chat_messages')
+      .insert({ user_id: userId, message: messageText })
+      .select(`
+        id,
+        message,
+        is_system_message,
+        created_at,
+        user_id,
+        users:user_id (
+          username,
+          initials
+        )
+      `)
+      .single();
+  
     if (error) throw error;
-    return data;
+    return data as ChatMessage;
   }
 
   async getTopScores(limit = 10): Promise<UserScore[]> {
