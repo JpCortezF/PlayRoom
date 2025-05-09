@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@supabase/supabase-js": "^2.49.4",
+    "dayjs": "^1.11.13",
     "flowbite": "^3.1.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

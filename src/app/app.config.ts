@@ -15,6 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideHttpClient(), 
     UserService,
-    { provide: LOCALE_ID, useValue: 'es-AR' } // Esta es la forma correcta
+    { provide: LOCALE_ID, useValue: 'es-AR' }
   ]
 };

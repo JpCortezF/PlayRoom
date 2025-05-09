@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService } from '../../services/database.service';
 import { UserService } from '../../services/user.service';
-import { ChatMessage } from '../../classes/chat';
 
 @Component({
   selector: 'app-chat',
@@ -29,7 +28,6 @@ export class ChatComponent {
   private async loadInitialData() {
     this.userService.currentUser$.subscribe(user => {
       this.currentUser = user;
-      console.log('initials:', user.initials);
       if (user) {
         this.welcomeMessage = `¡Hola ${user.username}, bienvenido al chat!`;
         this.loadMessages();
@@ -57,7 +55,7 @@ export class ChatComponent {
     try {
       await this.db.sendUserMessage(
         this.currentUser.id,
-        this.message
+        this.message,
       );
       
       this.message = '';
@@ -84,24 +82,82 @@ export class ChatComponent {
   }
 
   private groupMessagesByDate() {
-    const groups: {[key: string]: any[]} = {};
-    
+    const groups: { [key: string]: any[] } = {};
+  
     this.messages.forEach(msg => {
-      const date = new Date(msg.created_at).toLocaleDateString('es-AR', {
+      const dateUTC = new Date(msg.created_at);
+  
+      // De UTC a UTC-3
+      const dateLocal = new Date(dateUTC.getTime() - 3 * 60 * 60 * 1000);
+  
+      const dateLabel = dateLocal.toLocaleDateString('es-AR', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
       });
-      
-      if (!groups[date]) {
-        groups[date] = [];
+  
+      // HH:mm
+      msg.formattedTime = dateLocal.toLocaleTimeString('es-AR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+  
+      if (!groups[dateLabel]) {
+        groups[dateLabel] = [];
       }
-      groups[date].push(msg);
+  
+      groups[dateLabel].push(msg);
     });
-    
+  
     this.groupedMessages = Object.keys(groups).map(date => ({
       date,
       messages: groups[date]
     }));
+  }
+
+  formatMessage(text: string): string {
+    if (!text) return '';
+  
+    // Dividir el texto en líneas automáticas si es muy largo
+    const maxLineLength = 40;
+    const lines = text.split('\n');
+  
+    // Dividir cada línea más larga que maxLineLength
+    const processedLines = lines.flatMap(line => {
+      const words = line.split(' ');
+      let currentLine = '';
+      const result = [];
+  
+      words.forEach(word => {
+        if ((currentLine + word).length > maxLineLength) {
+          result.push(currentLine.trim());
+          currentLine = word;
+        } else {
+          currentLine += ' ' + word;
+        }
+      });
+  
+      // Agregar la última línea
+      if (currentLine.trim().length > 0) {
+        result.push(currentLine.trim());
+      }
+  
+      return result;
+    });
+  
+    const isSingleLine = processedLines.length === 1;
+  
+    // Generar los <span> con clases adecuadas
+    const spanLines = processedLines.map((line, index) => {
+      // último renglón o al único renglón
+      const className = isSingleLine || index === processedLines.length - 1 ? 'inline-block pr-12' : 'inline-block';
+  
+      // caracteres peligrosos
+      const safeLine = line.replace(/</g, '<').replace(/>/g, '>');
+  
+      return `<span class="${className}">${safeLine}</span>`;
+    });
+  
+    return spanLines.join('<br>');
   }
 }
