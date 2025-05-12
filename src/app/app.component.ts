@@ -13,5 +13,4 @@ import { FooterComponent } from './components/general-components/footer/footer.c
 export class AppComponent {
   title = 'gameroom';
   @Output() iconUrl: string = 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//playroom_icon.png';
-  @Output() userImageUrl: string = 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//user_icon.png';
 }

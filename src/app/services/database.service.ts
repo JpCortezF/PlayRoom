@@ -73,7 +73,7 @@ export class DatabaseService {
     return data?.map(s => new UserScore(s)) || [];
   }
 
-  async createScore(score: Partial<UserScore>): Promise<UserScore | null> {
+  async saveUserScore(score: Partial<UserScore>): Promise<UserScore | null> {
     const { data } = await this.sb.supabase.from('user_scores').insert(score).select().single();
     return data ? new UserScore(data) : null;
   }
@@ -119,13 +119,22 @@ export class DatabaseService {
     return data as ChatMessage;
   }
 
-  async getTopScores(limit = 10): Promise<UserScore[]> {
-    const { data } = await this.sb.supabase.from('user_scores').select('*').order('score', { ascending: false }).limit(limit);
-    return data?.map(s => new UserScore(s)) || [];
-  }
+  async getTopScores(gameTypeId: number, limit = 5): Promise<UserScore[]> {
+    const { data, error } = await this.sb.supabase
+      .from('user_scores')
+      .select(`
+        id,
+        user_id,
+        game_type_id,
+        score,
+        created_at,
+        metadata
+      `)
+      .eq('game_type_id', gameTypeId)
+      .order('score', { ascending: false })
+      .limit(limit);
 
-  async getRecentMessages(limit = 30): Promise<ChatMessage[]> {
-    const { data } = await this.sb.supabase.from('chat_messages').select('*').order('created_at', { ascending: false }).limit(limit);
-    return data?.map(m => new ChatMessage(m)) || [];
+    if (error) throw error;
+    return data?.map(item => new UserScore(item)) || [];
   }
 }

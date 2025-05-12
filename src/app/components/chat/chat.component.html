@@ -28,7 +28,7 @@
               <p class="text-xs font-semibold text-gray-600 mb-1">{{ msg.users?.username || 'Usuario' }}</p>
               <div class="bg-gray-200 rounded-lg px-3 py-2 text-gray-800 max-w-[300px] relative break-words">
                 <div class="whitespace-pre-wrap" [innerHTML]="formatMessage(msg.message)"></div>
-                <span class="text-[10px] text-gray-500 absolute bottom-2 right-2 whitespace-nowrap">
+                <span class="text-[10px] text-gray-500 absolute bottom-0 right-2 whitespace-nowrap">
                   {{ msg.formattedTime }}
                 </span>
               </div>
@@ -41,7 +41,7 @@
               <p class="text-xs font-semibold text-blue-600 mb-1">Yo</p>
               <div class="bg-blue-100 rounded-lg px-3 py-2 text-blue-800 relative break-words max-w-[300px]">
                 <div class="whitespace-pre-wrap" [innerHTML]="formatMessage(msg.message)"></div>
-                <span class="text-[10px] text-gray-500 absolute bottom-2 right-2 whitespace-nowrap">
+                <span class="text-[10px] text-gray-500 absolute bottom-0 right-2 whitespace-nowrap">
                   {{ msg.formattedTime }}
                 </span>
               </div>

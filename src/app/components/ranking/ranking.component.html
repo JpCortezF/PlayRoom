@@ -1,0 +1,43 @@
+<div class="mt-8 bg-black/40 p-6 rounded-xl text-white">
+  <h2 class="text-2xl font-bold mb-4">Top 5</h2>
+  @if(ranking && ranking.length > 0) {
+    <div class="overflow-x-auto">
+      <div *ngIf="gameType" class="mb-4">
+        <h2 class="text-xl font-bold">{{ gameType.name }} Ranking</h2>
+      </div>
+      <table class="w-full text-sm">
+        <thead class="text-xs uppercase bg-gray-700">
+          <tr>
+            <th scope="col" class="px-4 py-3 text-left">#</th>
+            <th class="px-4 py-3 text-left">Usuario</th>
+            <th class="px-4 py-3 text-right">Puntaje</th>
+            <th class="px-4 py-3 text-right">Segundos</th>
+            <th class="px-4 py-3 text-right">Errores</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading) {
+            <tr>
+              <td colspan="4" class="px-4 py-3 text-center">Cargando ranking...</td>
+            </tr>
+          } @else {
+            @for (item of ranking; track $index; let i = $index) {
+              <tr class="border-b border-gray-700 hover:bg-gray-700/50">
+                <td class="px-4 py-3 font-medium">{{i + 1}}</td>
+                <td class="px-4 py-3">{{ item.username }}</td>
+                <td class="px-4 py-3 text-right">{{ item.score }}</td>
+                <td class="px-4 py-3 text-right">{{ item.time_seconds }}</td>
+                <td class="px-4 py-3 text-right">{{ item.errors }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+  <div class="text-center py-8 text-gray-400">
+    <p>Aún no hay puntuaciones registradas</p>
+    <p class="mt-2">¡Sé el primero en aparecer aquí!</p>
+  </div>
+  }
+</div>

@@ -30,7 +30,6 @@ export class UserService {
             id: userFromDb.id,
             email: authUser.email,
             username: userFromDb.username || emailSplit,
-            avatar_url: userFromDb.initials,
             name: userFromDb.name || '',
             initials: userFromDb.initials || 'US',
           };

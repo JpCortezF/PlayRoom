@@ -16,7 +16,7 @@ export class ChatMessage {
     this.user_id = data.user_id;
     this.message = data.message || '';
     this.is_system_message = data.is_system_message || false;
-    this.created_at = data.created_at ? new Date(data.created_at) : undefined;
+    this.created_at = data.created_at;
     if (Array.isArray(data.users)) {
       this.users = data.users[0];
     } else {
