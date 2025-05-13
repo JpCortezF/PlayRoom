@@ -24,11 +24,13 @@
 
               <!-- Contenedor de categoría -->
               <h2 class="text-white text-2xl font-semibold mb-4 text-center">Selecciona una categoría:</h2>
-
+              @if(showCategorySelection){
+                
+              }
               <div class="w-full flex flex-col items-center">
                 @for (category of categories; track $index) {
                   <button 
-                    (click)="selectCategory(category)" 
+                    (click)="selectCategory(category)"
                     [disabled]="category.used"
                     class="bg-white w-full md:w-[70%] p-4 md:p-3 rounded-md text-black hover:scale-105 transform transition duration-300 mb-2 disabled:opacity-40 disabled:cursor-not-allowed">
                     {{ category.title }}

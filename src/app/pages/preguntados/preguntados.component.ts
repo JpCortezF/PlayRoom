@@ -20,6 +20,7 @@ export class PreguntadosComponent {
   gameStarted: boolean = false;
   gameFinished: boolean = false;
   loading: boolean = false;
+  showCategorySelection: boolean = false;
 
   lives: number = 3;
   score: number = 0;
@@ -45,6 +46,7 @@ export class PreguntadosComponent {
   startGame() {
     this.gameStarted = true;
     this.gameFinished = false;
+    this.showCategorySelection = true;
   }
 
   restartGame() {
