@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center min-h-screen bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900">
+<div class="flex flex-col items-center min-h-screen bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900 p-4">
   <div class="w-full max-w-6xl mx-auto mt-6 mb-6">
     <!-- Tarjeta del Juego -->
     <div class="rounded-xl overflow-hidden relative min-h-[70vh] md:h-[80vh]">
@@ -23,29 +23,63 @@
               </div>
 
               <!-- Contenedor de categoría -->
-              <h2 class="text-white text-2xl font-semibold mb-4 text-center">Selecciona una categoría:</h2>
               @if(showCategorySelection){
-                
-              }
-              <div class="w-full flex flex-col items-center">
-                @for (category of categories; track $index) {
-                  <button 
-                    (click)="selectCategory(category)"
-                    [disabled]="category.used"
-                    class="bg-white w-full md:w-[70%] p-4 md:p-3 rounded-md text-black hover:scale-105 transform transition duration-300 mb-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                    {{ category.title }}
-                  </button>
+                <h2 class="text-white text-2xl font-semibold mb-4 text-center">Selecciona una categoría:</h2>
+                <!-- Selección de categoría -->
+                <div class="w-full flex flex-col items-center">
+                  @for (category of categories; track $index) {
+                    <button 
+                      (click)="selectCategory(category)"
+                      [disabled]="category.used"
+                      class="bg-white w-full md:w-[70%] p-3 md:p-2 rounded-md text-black hover:scale-105 transform transition duration-300 mb-3 disabled:opacity-40 disabled:cursor-not-allowed">
+                      {{ category.title }}
+                    </button>
+                  }
+                </div>
+              } @else {
+                @if(loading){
+                  <div class="flex justify-center items-center h-64">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                } @else {
+                <div *ngIf="currentQuestion && !gameFinished" class="bg-[#e0e0e0] rounded-xl p-10 pb-14 w-full md:w-[75%] max-w-2xl mx-auto text-black relative">               
+                  <!-- Temporizador (arriba a la derecha en la nube) -->
+                  <div class="absolute top-4 right-6 text-lg font-semibold bg-white px-4 py-1 rounded-full shadow-md text-blue-700">
+                    ⏳ {{ timeLeft }}s
+                  </div>
+
+                  <!-- Pregunta -->
+                  <h3 class="text-xl font-bold mb-6 text-center mt-8">{{ currentQuestion.question }}</h3>
+
+                  <!-- Opciones -->
+                  <div class="grid gap-4">
+                    <button 
+                      *ngFor="let option of currentOptions"
+                      (click)="handleAnswer(option)"
+                      [disabled]="answerSelected"
+                      [ngClass]="{
+                        'bg-green-500 text-white': answerSelected && option === correctAnswer,
+                        'bg-red-500 text-white': answerSelected && option === selectedAnswer && option !== correctAnswer,
+                        'bg-white text-black': !answerSelected
+                      }"
+                      class="w-full py-2 px-3 rounded-md text-lg font-medium border border-gray-300 transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed">
+                      {{ option }}
+                    </button>
+                  </div>
+
+                  <div class="absolute bottom-2 left-6 text-2xl">
+                    <span *ngFor="let i of [1,2,3]">
+                      {{ i <= lives ? '❤️' : '🖤' }}
+                    </span>
+                  </div>
+                  <div class="absolute bottom-2 right-6 text-lg font-semibold text-blue-700">
+                    Puntaje: {{ score }}
+                  </div>
+                </div>
                 }
-              </div>
+              }
             </div>
           </div>
-        @if(gameFinished){
-          <button 
-              (click)="restartGame()" 
-              class="px-6 py-2 bg-black/60 hover:bg-black/80 text-white rounded-lg">
-              Volver a jugar
-            </button>
-        }
       }
     </div>
 
@@ -56,7 +90,10 @@
               diversas categorías. Con un enfoque en la diversión y el aprendizaje, el objetivo es responder preguntas
               correctamente para mantener las vidas disponibles y acumular la mayor cantidad de puntos posible, compitiendo
               por un lugar en el ranking de los mejores jugadores.<br><br>
-              En esta versión de Preguntados, el jugador va respondiendo preguntas sobre las distintas categorías (Historia, Ciencia, Deportes, Arte, Entretenimiento y Geografía).
+              En esta versión de Preguntados, el jugador a elegir entre las 6 categorias (Historia, Ciencia, Deportes, Arte, Entretenimiento o Deportes).
+              Una vez seleccionada la categoría, el jugador deberá responder 3 preguntas de trivia relacionadas con esa categoría, luego de las 3 preguntas,
+              se le vuelve a consultar al jugador con que categoria desea jugar (bloqueandole las categorias que ya haya seleccionado), y así sucesivamente.
+              El jugador tiene 3 vidas, y cada vez que responde incorrectamente, pierde una vida.
               <br><br>
             </p>
         </div>

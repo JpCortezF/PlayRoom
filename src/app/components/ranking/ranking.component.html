@@ -11,7 +11,11 @@
             <th scope="col" class="px-4 py-3 text-left">#</th>
             <th class="px-4 py-3 text-left">Usuario</th>
             <th class="px-4 py-3 text-right">Puntaje</th>
-            @if (gameType?.id === 2 || gameType?.id === 1) {
+            @if(gameType?.id === 1) {
+              <th class="px-4 py-3 text-right">Racha</th>
+              <th class="px-4 py-3 text-right">Cant. Categorías</th>
+            }
+            @if (gameType?.id === 2) {
               <th>Correctas</th>
               <th>Streak</th>
             } @else if(gameType?.id === 3){
@@ -27,7 +31,11 @@
                 <td class="px-4 py-3 font-medium">{{i + 1}}</td>
                 <td class="px-4 py-3">{{ item.username }}</td>
                 <td class="px-4 py-3 text-right">{{ item.score }}</td>
-                @if(gameType?.id === 2 || gameType?.id === 1){
+                @if(gameType?.id === 1){
+                  <td class="px-4 py-3 text-right">{{ item.max_streak }}</td>
+                  <td class="px-4 py-3 text-right">{{ item.cant_categories }}</td>
+                }
+                @if(gameType?.id === 2){
                   <td class="px-4 py-3 text-right">{{ item.correct_guesses }}</td>
                   <td class="px-4 py-3 text-right">{{ item.streak }}</td>
                 }

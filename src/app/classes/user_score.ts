@@ -1,11 +1,16 @@
-type AhorcadoMetadata = {
-  time_seconds: number;
-  incorrect_guesses: number;
+type PreguntadosMetadata = {
+  streak?: number;
+  cant_categories?: number;
 };
 
 type MayorMenorMetadata = {
   correct_guesses: number;
   streak?: number;
+};
+
+type AhorcadoMetadata = {
+  time_seconds: number;
+  incorrect_guesses: number;
 };
 
 export class UserScore {
@@ -17,6 +22,7 @@ export class UserScore {
   metadata: {
     ahorcado?: AhorcadoMetadata;
     mayor_menor?: MayorMenorMetadata;
+    preguntados?: PreguntadosMetadata;
   } = {};
 
   constructor(data: Partial<UserScore> = {}) {

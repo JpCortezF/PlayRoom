@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, inject, Output } from '@angular/core';
 import { RankingComponent } from '../../components/ranking/ranking.component';
 import { CommonModule } from '@angular/common';
 import { GameType } from '../../classes/game_type';
@@ -6,6 +6,8 @@ import { DatabaseService } from '../../services/database.service';
 import { UserService } from '../../services/user.service';
 import { DeckService } from '../../services/deck.service';
 import { take } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mayor-menor',
@@ -17,6 +19,7 @@ import { take } from 'rxjs/operators';
 export class MayorMenorComponent {
   @Output() alreadySaved = false;
   @Output() gameType: GameType | null = null;
+  router = inject(Router);
 
   gameStarted: boolean = false;
   gameFinished: boolean = false;
@@ -106,6 +109,7 @@ export class MayorMenorComponent {
         await this.db.saveUserScore(scoreData);
         this.alreadySaved = true;
         console.log('Resultado guardado exitosamente');
+        this.showGameOverAlert();
       } catch (error) {
         console.error('Error al guardar el resultado:', error);
       }
@@ -115,4 +119,40 @@ export class MayorMenorComponent {
   async restartGame() {
     await this.startGame();
   }
+
+  showGameOverAlert(): void {
+      Swal.fire({
+        title: '¡Juego Terminado!',
+        html: `
+          <div class="text-center">
+            <p class="text-2xl font-bold mb-4">Puntaje: <span class="text-blue-600">${this.score}</span></p>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="bg-gray-100 p-3 rounded-lg">
+                <p class="font-semibold">Predicciones acertadas</p>
+                <p class="text-green-600 text-xl">${this.correctGuesses}</p>
+              </div>
+              <div class="bg-gray-100 p-3 rounded-lg">
+                <p class="font-semibold">Racha máxima</p>
+                <p class="text-purple-600 text-xl">${this.maxStreak}</p>
+              </div>
+            </div>
+          </div>
+        `,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Jugar de nuevo',
+        cancelButtonText: 'Volver al inicio',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.restartGame();
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          this.router.navigate(['/']);
+        }
+      });
+    }
 }

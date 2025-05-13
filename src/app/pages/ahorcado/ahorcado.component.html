@@ -1,7 +1,7 @@
 <div class="flex flex-col items-center min-h-screen bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900 p-4">
   <div class="w-full max-w-7xl mx-auto mt-6 md:mb-6">
     <!-- Tarjeta del Juego -->
-    <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden min-h-[60vh] md:h-[70vh]">
+    <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden min-h-[60vh] max-h-[90vh] md:min-h-[70vh]">
       @if(!currentWord) {
       <div class="flex flex-col items-center justify-end p-12 text-center h-full">
         <img src="ahorcado-home.webp" alt="Ahorcado" class="absolute inset-0 w-full h-full object-cover opacity-20">
@@ -16,34 +16,36 @@
         </div>
       </div>
       } @else {
-      <div class="p-6">
-        <div class="flex justify-center mb-8">
-          <img [src]="hangmanImage" class="h-64 object-contain" alt="Dibujo del ahorcado">
-        </div>
+        <div class="p-6 h-full flex flex-col">
+          <!-- Contenedor desplazable -->
+          <div class="flex-1 overflow-y-auto">
+            <div class="flex justify-center mb-8">
+              <img [src]="hangmanImage" class="h-64 object-contain" alt="Dibujo del ahorcado">
+            </div>
 
-        <div class="mb-10">
-          <p class="text-center text-4xl font-mono tracking-widest text-gray-800">
-            {{ displayedWord.join(' ') }}
-          </p>
-        </div>
+            <div class="mb-10">
+              <p class="text-center text-4xl font-mono tracking-widest text-gray-800">
+                {{ displayedWord.join(' ') }}
+              </p>
+            </div>
 
-        <div class="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-13 gap-2">
-          @for (letter of letters; track $index) {
-          <button 
-            (click)="selectLetter(letter)"
-            [disabled]="letterStatus[letter] !== 'not-selected' || gameFinished"
-            class="h-12 flex items-center justify-center rounded-md transition-all font-bold text-white"
-            [ngClass]="{
-              'bg-green-500 hover:bg-green-600': letterStatus[letter] === 'correct',
-              'bg-red-500 hover:bg-red-600': letterStatus[letter] === 'incorrect',
-              'bg-blue-600 hover:bg-blue-700': letterStatus[letter] === 'not-selected',
-              'opacity-50 cursor-not-allowed': letterStatus[letter] !== 'not-selected' || gameFinished
-            }">
-            {{letter}}
-          </button>
-          }
+          <div class="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-13 gap-2">
+            @for (letter of letters; track $index) {
+            <button 
+              (click)="selectLetter(letter)"
+              [disabled]="letterStatus[letter] !== 'not-selected' || gameFinished"
+              class="h-12 flex items-center justify-center rounded-md transition-all font-bold text-white"
+              [ngClass]="{
+                'bg-green-500 hover:bg-green-600': letterStatus[letter] === 'correct',
+                'bg-red-500 hover:bg-red-600': letterStatus[letter] === 'incorrect',
+                'bg-blue-600 hover:bg-blue-700': letterStatus[letter] === 'not-selected',
+                'opacity-50 cursor-not-allowed': letterStatus[letter] !== 'not-selected' || gameFinished
+              }">
+              {{letter}}
+            </button>
+            }
+          </div>
         </div>
-
         <!-- Mensaje de Resultado -->
         @if(gameFinished) {
         <div class="mt-8 text-center">
@@ -55,16 +57,6 @@
               (click)="startGame()"
               class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Jugar Otra Vez
-            </button>
-          </div>
-          } @else {
-          <div class="p-4 bg-red-100 text-red-800 rounded-lg">
-            <p class="text-xl font-bold">¡Perdiste! 😢</p>
-            <p class="mt-2">La palabra era: <span class="font-bold">{{currentWord}}</span></p>
-            <button 
-              (click)="startGame()" 
-              class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Intentar Nuevamente
             </button>
           </div>
           }

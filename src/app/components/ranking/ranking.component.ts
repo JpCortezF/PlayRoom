@@ -44,6 +44,7 @@ export class RankingComponent {
       );
       this.ranking = scores.map((score, index) => {
       const user = users[index];
+      const isPreguntados = score.game_type_id === 1;
       const isMayorMenor = score.game_type_id === 2;
       const isAhorcado = score.game_type_id === 3;
 
@@ -52,6 +53,8 @@ export class RankingComponent {
         score: score.score,
         game_type_id: score.game_type_id,
         // Campos condicionales
+        max_streak: isPreguntados ? score.metadata?.preguntados?.streak ?? '--' : undefined,
+        cant_categories: isPreguntados ? score.metadata?.preguntados?.cant_categories ?? '--' : undefined,
         correct_guesses: isMayorMenor ? score.metadata?.mayor_menor?.correct_guesses ?? '--' : undefined,
         streak: isMayorMenor ? score.metadata?.mayor_menor?.streak ?? '--' : undefined,
         time_seconds: isAhorcado ? score.metadata?.ahorcado?.time_seconds ?? '--' : undefined,

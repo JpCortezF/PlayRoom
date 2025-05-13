@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, inject, Output } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { UserService } from '../../services/user.service';
 import { UserScore } from '../../classes/user_score';
@@ -6,6 +6,8 @@ import { RankingComponent } from "../../components/ranking/ranking.component";
 import { CommonModule } from '@angular/common';
 import { GameType } from '../../classes/game_type';
 import { take } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ahorcado',
@@ -15,7 +17,11 @@ import { take } from 'rxjs/operators';
   styleUrl: './ahorcado.component.css'
 })
 export class AhorcadoComponent {
-  // Lista de palabras para el juego
+  @Output() gameType: GameType | null = null;
+  @Output() alreadySaved = false;
+  router = inject(Router);
+
+
   private palabras: string[] = [
     'AHORCADO', 'COMPUTADORA', 'TELEFONO', 'ELEFANTE', 'GIRASOL', 
     'PARAGUAS', 'HELICOPTERO', 'CHOCOLATE', 'BICICLETA', 'VENTANA',
@@ -67,17 +73,16 @@ export class AhorcadoComponent {
   letterStatus: { [key: string]: 'correct' | 'incorrect' | 'not-selected' } = {};
   
   // Estadísticas
+  score: number = 0;
   errors: number = 0;
   maxErrors: number = 8;
   gameFinished: boolean = false;
-  @Output() alreadySaved = false;
   gameWon: boolean = false;
   startTime: Date | null = null;
   endTime: Date | null = null;
   
   // UI
   hangmanImage: string = 'hangman0.webp';
-  @Output() gameType: GameType | null = null;
 
   constructor(private db: DatabaseService, private userService: UserService) {}
 
@@ -158,6 +163,8 @@ export class AhorcadoComponent {
     
     if (isWinner) {
       this.saveGameResult(true);
+    }else{
+      this.showGameOverAlert();
     }
   }
 
@@ -165,6 +172,7 @@ export class AhorcadoComponent {
     if (this.alreadySaved || !won || !this.startTime || !this.endTime) return;
 
     const gameDuration = Math.round((this.endTime.getTime() - this.startTime.getTime()) / 1000);
+    this.score = this.calculateScore(gameDuration, this.errors);
     this.userService.currentUser$.pipe(take(1)).subscribe(async currentUser => {
       const scoreData = new UserScore({
         user_id: currentUser.id,
@@ -189,7 +197,38 @@ export class AhorcadoComponent {
   }
 
   private calculateScore(timeSeconds: number, errors: number): number {
-    // Fórmula de ejemplo: 1000 puntos base - (tiempo en segundos * 2) - (errores * 30)
     return Math.max(100, 1000 - (timeSeconds * 2) - (errors * 30));
   }
+
+  showGameOverAlert(): void {
+      Swal.fire({
+        title: '¡Juego Terminado!',
+        html: `
+          <div class="text-center">
+            <p class="text-2xl font-bold mb-4">Puntaje: <span class="text-blue-600">${this.score}</span></p>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="bg-gray-100 p-3 rounded-lg">
+                <p class="font-semibold">La palabra era: </p>
+                <p class="text-green-600 text-xl">${this.currentWord}</p>
+              </div>
+            </div>
+          </div>
+        `,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Jugar de nuevo',
+        cancelButtonText: 'Volver al inicio',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.startGame();
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          this.router.navigate(['/']);
+        }
+      });
+    }
 }
