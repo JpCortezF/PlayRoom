@@ -9,7 +9,7 @@ export const noAuthGuard: CanActivateFn = async (route, state) => {
   
     const { data: { session } } = await supabase.auth.getSession();
     
-    if (session?.user) {
+    if (session?.user && (state.url === '/login' || state.url === '/register')) {
       router.navigate(['/']);
       return false;
     }

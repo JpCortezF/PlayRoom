@@ -118,7 +118,6 @@ export class ChatComponent {
   formatMessage(text: string): string {
     if (!text) return '';
   
-    // Dividir el texto en líneas automáticas si es muy largo
     const maxLineLength = 40;
     const lines = text.split('\n');
   
@@ -142,14 +141,12 @@ export class ChatComponent {
         result.push(currentLine.trim());
       }
   
-      return result;
-    });
+        return result;
+      });
   
-    const isSingleLine = processedLines.length === 1;
-  
-    // Generar los <span> con clases adecuadas
-    const spanLines = processedLines.map((line, index) => {
-      // último renglón o al único renglón
+      const isSingleLine = processedLines.length === 1;
+    
+      const spanLines = processedLines.map((line, index) => {
       const className = isSingleLine || index === processedLines.length - 1 ? 'inline-block pr-12' : 'inline-block';
   
       // caracteres peligrosos

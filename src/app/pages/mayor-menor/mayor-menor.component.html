@@ -1,1 +1,84 @@
-<p>mayor-menor works!</p>
+<div class="flex flex-col items-center min-h-screen bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900">
+  <div class="w-full max-w-6xl mx-auto mt-6 mb-6">
+    <!-- Tarjeta del Juego -->
+    <div class="rounded-xl overflow-hidden relative min-h-[60vh] md:h-[70vh]">
+      @if(!gameStarted) {
+        <div class="flex flex-col items-center justify-end p-12 text-center h-full">
+          <img src="higher-lower-home.webp" alt="Mayor o Menor" class="absolute inset-0 w-full h-full object-cover opacity-80">
+          <div class="flex flex-col justify-end items-center text-center relative z-10">
+            <button 
+              (click)="startGame()" 
+              class="px-16 py-3 bg-black/60 hover:bg-black/80 text-white font-medium rounded-lg transition-all transform hover:scale-105">
+              Iniciar Juego
+            </button>
+          </div>
+        </div>
+      } @else {
+          @if(!spin){
+            <div class="flex justify-center items-center h-64">
+              <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          } @else {
+              <div class="flex flex-col items-center justify-center gap-6 p-8 text-center z-10 relative">
+                <img [src]="currentCard?.image" alt="Carta actual" class="w-50 h-auto rounded-lg shadow-lg" />
+
+                <div class="flex gap-6">
+                  <button 
+                    (click)="guess('mayor')" 
+                    class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition hover:scale-105">
+                    Mayor
+                  </button>
+                  <button 
+                    (click)="guess('menor')" 
+                    class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition hover:scale-105">
+                    Menor
+                  </button>
+                </div>
+
+                <!-- Corazones -->
+                <div class="w-full flex justify-between items-center px-8 mt-4">
+                  <div class="text-2xl text-white">
+                    <span *ngFor="let i of [1,2,3]">
+                      {{ i <= lives ? '❤️' : '🖤' }}
+                    </span>
+                  </div>
+
+                  <div class="text-xl text-gray-100 font-semibold">
+                    Puntaje: {{ score }}
+                  </div>
+                </div>
+              </div>
+        }
+        @if(gameFinished) {
+          <div class="mt-6 text-center text-white">
+            <p class="text-2xl font-semibold text-red-600 mb-4">¡Juego Terminado!</p>
+            <p class="mb-2">La carta era: <strong>{{ nextCard?.value }}</strong></p>
+
+            <button 
+              (click)="restartGame()" 
+              class="px-6 py-2 bg-black/60 hover:bg-black/80 text-white rounded-lg">
+              Volver a jugar
+            </button>
+          </div>
+        }
+      }  
+    </div> 
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div class="bg-black/40 p-6 rounded-xl text-white">
+          <h2 class="text-2xl font-semibold pb-2">Explicacion del juego:</h2>
+            <p><strong>Mayor o Menor:</strong> es un juego de predicción simple y entretenido que desafía al jugador a
+              anticipar el valor de la próxima carta. Perfecto para entrenar la intuición y probar suerte, el juego cuenta con
+              un diseño accesible que lo hace ideal tanto para partidas rápidas como para quienes buscan mejorar su posición
+              en el ranking de los mejores jugadores.<br><br>
+              El juego comienza presentando una carta inicial, junto a dos opciones: un botón de "Mayor" y otro de "Menor". El jugador debe adivinar si la próxima
+              carta mostrada será de mayor o menor valor que la actual. Cada partida se inicia con tres corazones (vidas).
+              <br><br>
+            </p>
+        </div>
+        @if (gameType) {
+          <app-ranking [gameType]="gameType" [alreadySaved]="alreadySaved"></app-ranking>
+        }
+      </div>
+  </div>
+</div>

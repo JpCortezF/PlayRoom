@@ -5,7 +5,6 @@ type AhorcadoMetadata = {
 
 type MayorMenorMetadata = {
   correct_guesses: number;
-  total_cards: number;
   streak?: number;
 };
 

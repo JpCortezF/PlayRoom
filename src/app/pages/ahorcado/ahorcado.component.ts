@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Output } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { UserService } from '../../services/user.service';
@@ -6,6 +5,7 @@ import { UserScore } from '../../classes/user_score';
 import { RankingComponent } from "../../components/ranking/ranking.component";
 import { CommonModule } from '@angular/common';
 import { GameType } from '../../classes/game_type';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ahorcado',
@@ -70,7 +70,8 @@ export class AhorcadoComponent {
   errors: number = 0;
   maxErrors: number = 8;
   gameFinished: boolean = false;
-  @Output() gameWon: boolean = false;
+  @Output() alreadySaved = false;
+  gameWon: boolean = false;
   startTime: Date | null = null;
   endTime: Date | null = null;
   
@@ -86,7 +87,7 @@ export class AhorcadoComponent {
   }
 
   ngOnDestroy() {
-    if (this.startTime && !this.endTime) {
+    if (this.startTime && !this.endTime && !this.alreadySaved) {
       this.endTime = new Date();
       this.saveGameResult(false);
     }
@@ -161,10 +162,10 @@ export class AhorcadoComponent {
   }
 
   async saveGameResult(won: boolean) {
-    if (!won || !this.startTime || !this.endTime) return;
+    if (this.alreadySaved || !won || !this.startTime || !this.endTime) return;
 
     const gameDuration = Math.round((this.endTime.getTime() - this.startTime.getTime()) / 1000);
-    this.userService.currentUser$.subscribe(async currentUser => {
+    this.userService.currentUser$.pipe(take(1)).subscribe(async currentUser => {
       const scoreData = new UserScore({
         user_id: currentUser.id,
         game_type_id: 3,
@@ -179,6 +180,7 @@ export class AhorcadoComponent {
       console.log('Datos del score:', scoreData);
       try {
         await this.db.saveUserScore(scoreData);
+        this.alreadySaved = true;
         console.log('Resultado guardado exitosamente');
       } catch (error) {
         console.error('Error guardando resultado:', error);

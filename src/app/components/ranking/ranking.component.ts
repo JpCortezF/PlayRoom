@@ -13,7 +13,7 @@ import { UserService } from '../../services/user.service';
 })
 export class RankingComponent {
   @Input() gameType: GameType | null = null;
-  @Input() gameWon: boolean = false;
+  @Input() alreadySaved: boolean = false;
   ranking: any[] = [];
   loading = true;
   
@@ -25,7 +25,7 @@ export class RankingComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['gameWon'] && !changes['gameWon'].firstChange) {
+    if (changes['alreadySaved'] && !changes['alreadySaved'].firstChange) {
       this.loadRanking();
     }
   }
@@ -42,63 +42,26 @@ export class RankingComponent {
       const users = await Promise.all(
         scores.map(score => this.db.getUserById(score.user_id))
       );
-      this.ranking = scores.map((score, index) => ({
-        username: users[index]?.username || 'Anónimo',
+      this.ranking = scores.map((score, index) => {
+      const user = users[index];
+      const isMayorMenor = score.game_type_id === 2;
+      const isAhorcado = score.game_type_id === 3;
+
+      return {
+        username: user?.username || 'Anónimo',
         score: score.score,
-        time_seconds: score.metadata?.ahorcado?.time_seconds || '--',
-        errors: score.metadata?.ahorcado?.incorrect_guesses || '--',
-        game_type_id: score.game_type_id
-      }));
+        game_type_id: score.game_type_id,
+        // Campos condicionales
+        correct_guesses: isMayorMenor ? score.metadata?.mayor_menor?.correct_guesses ?? '--' : undefined,
+        streak: isMayorMenor ? score.metadata?.mayor_menor?.streak ?? '--' : undefined,
+        time_seconds: isAhorcado ? score.metadata?.ahorcado?.time_seconds ?? '--' : undefined,
+        errors: isAhorcado ? score.metadata?.ahorcado?.incorrect_guesses ?? '--' : undefined
+      };
+    });
     } catch (error) {
       console.error('Error loading ranking:', error);
     } finally {
       this.loading = false;
     }
   }
-
-  // columns: { key: string; label: string; align?: 'left' | 'right' | 'center' }[] = [];
-
-
-  // ngOnInit(): void {
-  //   this.setColumns();
-  // }
-
-  // setColumns(): void {
-  //   this.columns = [
-  //     { key: 'username', label: 'Usuario', align: 'left' },
-  //     { key: 'score', label: 'Puntuación', align: 'center' },
-  //   ];
-
-  //   if (this.gameType?.name === 'Ahorcado') {
-  //     this.columns.push(
-  //       { key: 'time_seconds', label: 'Tiempo', align: 'center' },
-  //       { key: 'errors', label: 'Errores', align: 'center' }
-  //     );
-  //   } else if (this.gameType?.name === 'Mayor Menor') {
-  //     this.columns.push(
-  //       { key: 'correct_guesses', label: 'Correctas', align: 'center' },
-  //       { key: 'total_cards', label: 'Cartas', align: 'center' },
-  //       { key: 'streak', label: 'Racha', align: 'center' }
-  //     );
-  //   }
-  // }
-
-  // getColumns(): { key: string; label: string; align?: 'left' | 'right' | 'center' }[] {
-  //   return this.columns;
-  // }
-
-  // getProperty(item: any, key: string): any {
-  //   if (key === 'time_seconds') {
-  //     return item.time_seconds !== '--' ? `${item.time_seconds}s` : '--';
-  //   } else if (key === 'errors') {
-  //     return item.errors;
-  //   } else if (key === 'correct_guesses') {
-  //     return item.metadata?.mayor_menor?.correct_guesses || '--';
-  //   } else if (key === 'total_cards') {
-  //     return item.metadata?.mayor_menor?.total_cards || '--';
-  //   } else if (key === 'streak') {
-  //     return item.metadata?.mayor_menor?.streak || '--';
-  //   }
-  //   return item[key];
-  // }
 }
