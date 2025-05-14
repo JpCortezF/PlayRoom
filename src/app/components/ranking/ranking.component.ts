@@ -24,8 +24,8 @@ export class RankingComponent {
   
   
   async ngOnInit() {
-    if (this.route.snapshot.routeConfig?.path === 'stats') {
-      this.allGameTypes = await this.db.getAllGameTypes();
+    if (this.isStatsPage()) {
+      await this.loadGameTypes();
       this.selectedGameTypeId = this.allGameTypes[0]?.id || null;
       this.loadRanking();
     } 
@@ -34,6 +34,14 @@ export class RankingComponent {
     }
   }
 
+  isStatsPage(): boolean {
+    return this.route.snapshot.routeConfig?.path === 'stats';
+  }
+
+  async loadGameTypes() {
+    this.allGameTypes = await this.db.getAllGameTypes();
+  }
+  
   ngOnChanges(changes: SimpleChanges) {
     if (changes['alreadySaved'] && !changes['alreadySaved'].firstChange) {
       this.loadRanking();
@@ -45,43 +53,68 @@ export class RankingComponent {
     await this.loadRanking();
   }
 
+  getSelectedGameName(): string {
+    if (!this.selectedGameTypeId || !this.allGameTypes.length) return '';
+    const game = this.allGameTypes.find(g => g.id === this.selectedGameTypeId);
+    return game?.name || '';
+  }
+
   async loadRanking() {
     try {
       this.loading = true;
-      if (!this.gameType) {
-        throw new Error('GameType is null');
+      const gameTypeId = this.selectedGameTypeId || this.gameType?.id;
+      
+      if (!gameTypeId) {
+        this.ranking = [];
+        return;
       }
-      const scores = await this.db.getTopScores(this.gameType.id, 5);  
+      
+      const scores = await this.db.getTopScores(gameTypeId, 5);
       const users = await Promise.all(
         scores.map(score => this.db.getUserById(score.user_id))
       );
-
-      this.ranking = scores.map((score, index) => {
-      const user = users[index];
-      const isPreguntados = score.game_type_id === 1;
-      const isMayorMenor = score.game_type_id === 2;
-      const isAhorcado = score.game_type_id === 3;
-      const isDeftionary = score.game_type_id === 4;
-
-      return {
-        username: user?.username || 'Anónimo',
+      
+      this.ranking = scores.map((score, index) => ({
+        username: users[index]?.username || 'Anónimo',
         score: score.score,
         game_type_id: score.game_type_id,
-        // Campos condicionales
-        max_streak: isPreguntados ? score.metadata?.preguntados?.streak ?? '--' : undefined,
-        cant_categories: isPreguntados ? score.metadata?.preguntados?.cant_categories ?? '--' : undefined,
-        correct_guesses: isMayorMenor ? score.metadata?.mayor_menor?.correct_guesses ?? '--' : undefined,
-        streak: isMayorMenor ? score.metadata?.mayor_menor?.streak ?? '--' : undefined,
-        time_seconds: isAhorcado ? score.metadata?.ahorcado?.time_seconds ?? '--' : undefined,
-        errors: isAhorcado ? score.metadata?.ahorcado?.incorrect_guesses ?? '--' : undefined,
-        words_guessed: isDeftionary ? score.metadata?.deftionary?.words_guessed ?? '--' : undefined,
-        max_streak_deftionary: isDeftionary ? score.metadata?.deftionary?.streak ?? '--' : undefined,
-      };
-    });
+        ...this.getGameSpecificFields(score)
+      }));
     } catch (error) {
       console.error('Error loading ranking:', error);
+      this.ranking = [];
     } finally {
       this.loading = false;
+    }
+  }
+
+  private getGameSpecificFields(score: any): any {
+    const metadata = score.metadata || {};
+    const gameTypeId = score.game_type_id;
+    
+    switch(gameTypeId) {
+      case 1:
+        return {
+          max_streak: metadata.preguntados?.streak ?? '--',
+          cant_categories: metadata.preguntados?.cant_categories ?? '--'
+        };
+      case 2:
+        return {
+          correct_guesses: metadata.mayor_menor?.correct_guesses ?? '--',
+          streak: metadata.mayor_menor?.streak ?? '--'
+        };
+      case 3:
+        return {
+          time_seconds: metadata.ahorcado?.time_seconds ?? '--',
+          errors: metadata.ahorcado?.incorrect_guesses ?? '--'
+        };
+      case 4:
+        return {
+          words_guessed: metadata.deftionary?.words_guessed ?? '--',
+          max_streak_deftionary: metadata.deftionary?.streak ?? '--'
+        };
+      default:
+        return {};
     }
   }
 }
