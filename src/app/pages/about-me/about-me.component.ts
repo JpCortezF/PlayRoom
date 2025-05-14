@@ -12,7 +12,7 @@ export class AboutMeComponent {
   userData: any;
   isLoading = true;
   error = false;
-
+  iconUrl: string = 'https://lywvfyqtzcmaljbxuttn.supabase.co/storage/v1/object/public/playroom-storage//J-BUNKER.png';
   constructor(private http: HttpClient) {}
 
   ngOnInit() {

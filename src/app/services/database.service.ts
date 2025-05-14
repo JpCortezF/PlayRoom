@@ -57,6 +57,14 @@ export class DatabaseService {
     return data ? new GameType(data) : null;
   }
 
+  async getAllGameTypes(): Promise<GameType[]> {
+    if (this.gamesCache) return this.gamesCache;
+    
+    const { data } = await this.sb.supabase.from('game_types').select('*').order('id', { ascending: true });
+    this.gamesCache = data?.map(g => new GameType(g)) || [];
+    return this.gamesCache;
+  }
+
   // ==================== SCORES ====================
   async getAllScores(): Promise<UserScore[]> {
     const { data } = await this.sb.supabase.from('user_scores').select('*');

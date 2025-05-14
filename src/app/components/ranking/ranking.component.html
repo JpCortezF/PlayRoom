@@ -1,6 +1,41 @@
-<div class="bg-black/40 p-6 rounded-xl text-white">
-  <h2 class="text-2xl font-bold mb-4">Top 5</h2>
-  @if(ranking && ranking.length > 0) {
+<div class="bg-black/40 p-6 rounded-xl text-white"
+     [class.h-full]="route.snapshot.routeConfig?.path !== 'stats'"
+     [class.max-w-4xl]="route.snapshot.routeConfig?.path === 'stats'"
+     [class.mx-auto]="route.snapshot.routeConfig?.path === 'stats'"
+     [class.w-full]="route.snapshot.routeConfig?.path !== 'stats'">
+
+  @if(route.snapshot.routeConfig?.path === 'stats' && allGameTypes.length > 0) {
+    <div class="mb-6">
+      <label for="gameTypeSelect" class="block mb-2 text-lg font-bold">Selecciona un juego:</label>
+      <select 
+        id="gameTypeSelect" 
+        class="bg-gray-700 text-white rounded-lg px-4 py-2 w-full"
+        (change)="onGameTypeChange($event)"
+      >
+        @for (game of allGameTypes; track game.id) {
+          <option [value]="game.id" [selected]="game.id === selectedGameTypeId">
+            {{ game.name }}
+          </option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- Título condicional -->
+  <h2 class="text-2xl font-bold mb-4">
+    @if(route.snapshot.routeConfig?.path === 'stats') {
+      Top 5 - {{ allGameTypes || '' }}
+    }@else {
+      Top 5
+    }
+  </h2>
+
+  @if(loading){
+    <div class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  }
+  @else if(ranking && ranking.length > 0) {
     <div class="overflow-x-auto">
       <div *ngIf="gameType" class="mb-4">
         <h2 class="text-xl font-bold">Ranking {{ gameType.name }}</h2>
@@ -16,11 +51,16 @@
               <th class="px-4 py-3 text-right">Cant. Categorías</th>
             }
             @if (gameType?.id === 2) {
-              <th>Correctas</th>
-              <th>Streak</th>
-            } @else if(gameType?.id === 3){
+              <th class="px-4 py-3 text-right">Aciertos</th>
+              <th class="px-4 py-3 text-right">Racha</th>
+            } 
+            @if(gameType?.id === 3){
               <th class="px-4 py-3 text-right">Segundos</th>
               <th class="px-4 py-3 text-right">Errores</th>
+            }
+            @if(gameType?.id === 4){
+              <th class="px-4 py-3 text-right">Palabras acertadas</th>
+              <th class="px-4 py-3 text-right">Max. Racha</th>
             }
           </tr>
         </thead>
@@ -42,6 +82,10 @@
                 @if(gameType?.id === 3){
                   <td class="px-4 py-3 text-right">{{ item.time_seconds }}</td>
                   <td class="px-4 py-3 text-right">{{ item.errors }}</td>
+                }
+                @if(gameType?.id === 4){
+                  <td class="px-4 py-3 text-right">{{ item.words_guessed }}</td>
+                  <td class="px-4 py-3 text-right">{{ item.max_streak_deftionary }}</td>
                 }
               </tr>
             }

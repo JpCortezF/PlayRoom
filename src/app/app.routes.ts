@@ -13,6 +13,7 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/games/games.routes').then((archivo) => archivo.routes),
     canActivate: [authGuard]
   },
+  { path: 'stats', loadComponent: () => import('./components/ranking/ranking.component').then((archivo) => archivo.RankingComponent)},
 ];
 
 @NgModule({

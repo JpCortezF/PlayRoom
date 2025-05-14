@@ -1,0 +1,102 @@
+<div class="flex flex-col items-center bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900 p-4">
+  <div class="w-full max-w-5xl mx-auto mt-6 mb-6">
+    <!-- Tarjeta del Juego -->
+    <div class="flex flex-col items-center text-center">
+      <div class="bg-[#e0e0e0] backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden w-full h-full min-h-[60vh] max-h-[90vh] md:min-h-[70vh]">
+        @if(!gameStarted){
+          <div class="relative min-h-[calc(100vh-200px)] w-full">
+            <img src="book_image.webp" alt="Ahorcado" class="absolute inset-0 w-full h-full object-cover opacity-50">
+            <div class="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-200px)] py-8 px-4">
+              <h2 class="text-4xl font-semibold pb-2">📚 Bienvenidos a Deftionary 📚</h2>
+              <button 
+                class="px-5 py-2.5 text-lg cursor-pointer border-none bg-blue-600 text-white rounded-md transition-colors duration-300 hover:bg-blue-700 mt-4"
+                (click)="startGame()">
+                  Iniciar Juego
+              </button>
+            </div>
+          </div>
+        }@else {
+          @if(loading){
+            <div class="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-200px)] py-8 px-4 h-64">
+              <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          } @else {
+          <div class="flex flex-col items-center justify-center flex-1 p-6">
+            <div class="mb-6 w-full text-center">
+              <h2 class="text-4xl font-bold mb-2 mt-8" [ngClass]="{'text-green-600': isDefinitionCorrect, 'text-gray-700': !isDefinitionCorrect}">
+                {{ header }}
+              </h2>
+            </div>
+            
+            @if(!isDefinitionCorrect && feedbackMessage){
+              <h4 class="text-red-500 text-xl mb-6">{{ feedbackMessage }}</h4>
+            }
+            
+            <div class="bg-white/80 rounded-lg p-6 mb-8 w-full max-w-2xl text-center">
+              <p class="text-lg font-medium">{{ currentDefinition }}</p>
+            </div>
+
+            <div class="w-full max-w-md">
+              <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                <input 
+                  #wordInput 
+                  type="text" 
+                  placeholder="Adinvína la palabra" 
+                  class="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow w-full"
+                  (keydown.enter)="checkAnswer(wordInput.value, wordInput)"
+                >
+                <button 
+                  class="px-10 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300 w-full sm:w-auto"
+                  (click)="checkAnswer(wordInput.value, wordInput)">
+                  {{ buttonText }}
+                </button>
+              </div>
+            </div>
+          
+            <div class="flex justify-center gap-12 mb-8 w-full mt-10">
+              <div class="text-center">
+                <p class="font-bold">Puntaje</p>
+                <p class="text-2xl">{{ score }}</p>
+              </div>
+              <div class="text-center">
+                <p class="font-bold">Aciertos seguidos</p>
+                <p class="text-2xl" [ngClass]="{
+                  'text-green-500': currentStreak > 3,
+                  'text-yellow-500': currentStreak <= 3 && currentStreak > 0}">
+                  {{ currentStreak }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-2 my-2 text-2xl">
+              <span *ngFor="let i of [1,2,3]">
+                {{ i <= remainingLives ? '❤️' : '🖤' }}
+              </span>
+            </div>
+          </div>
+          }
+        }             
+      </div>            
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div class="bg-black/40 p-6 rounded-xl text-white">
+        <h2 class="text-2xl font-semibold pb-2">Reglas del Juego:</h2>
+        <p>
+          <strong>Deftionary:</strong> Adivina la palabra según su definición. 
+          Comienzas con 3 vidas (❤️❤️❤️). Cada acierto te da 10 puntos.
+          ¡Consigue una racha de 3+ aciertos para ganar 20 puntos por cada respuesta correcta!
+          <br><br>
+          Racha actual: {{ currentStreak }} | Racha máxima: {{ maxStreak }}
+        </p>
+        <p class="mt-4">
+          <strong>Objetivo:</strong> Adivina la palabra correcta antes de que se acaben las vidas.
+          <br><br>
+      </div>
+      
+      @if (gameType) {
+        <app-ranking [gameType]="gameType" [alreadySaved]="alreadySaved"></app-ranking>
+      }
+    </div>
+  </div>   
+</div>

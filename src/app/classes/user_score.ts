@@ -13,6 +13,11 @@ type AhorcadoMetadata = {
   incorrect_guesses: number;
 };
 
+type DeftionaryMetadata = {
+  words_guessed: number;
+  streak?: number;
+};
+
 export class UserScore {
   id?: number;
   user_id: number;
@@ -23,6 +28,7 @@ export class UserScore {
     ahorcado?: AhorcadoMetadata;
     mayor_menor?: MayorMenorMetadata;
     preguntados?: PreguntadosMetadata;
+    deftionary?: DeftionaryMetadata;
   } = {};
 
   constructor(data: Partial<UserScore> = {}) {
