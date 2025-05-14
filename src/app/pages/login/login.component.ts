@@ -36,6 +36,8 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).then((data) => {
       if (data.error) {
         this.handleLoginError(data.error);
+      } else {
+        this.router.navigate(['/']);
       }
     }).catch((error) => {
       console.error('Error inesperado:', error);

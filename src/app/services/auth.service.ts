@@ -14,6 +14,10 @@ export class AuthService {
   router = inject(Router);
   authReady = this.initializeAuth();
   
+  constructor() { 
+    // Saber si el usuario ya está autenticado
+    this.initializeAuth();
+  }
 
   private async initializeAuth(): Promise<void> {
     const { data: { session } } = await this.sb.supabase.auth.getSession();
