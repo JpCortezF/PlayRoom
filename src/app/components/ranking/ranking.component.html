@@ -6,7 +6,9 @@
       [class.mx-auto]="isStatsPage()"
       [class.w-full]="true">
 
-      <h1 class="text-3xl font-bold text-center text-white">Estadísticas Globales</h1>
+      @if(gameType === null){
+        <h1 class="text-3xl font-bold text-center text-white">Estadísticas Globales</h1>
+      }    
       @if(isStatsPage() && allGameTypes.length > 0) {
         <div class="mb-6">
           <label for="gameTypeSelect" class="block mb-2 text-lg font-bold">Selecciona un juego:</label>
@@ -47,19 +49,19 @@
                 <th scope="col" class="px-4 py-3 text-left">#</th>
                 <th class="px-4 py-3 text-left">Usuario</th>
                 <th class="px-4 py-3 text-right">Puntaje</th>
-                @if(selectedGameTypeId  === 1) {
+                @if(this.gameType?.id  === 1) {
                   <th class="px-4 py-3 text-right">Racha</th>
                   <th class="px-4 py-3 text-right">Cant. Categorías</th>
                 }
-                @if (selectedGameTypeId  === 2) {
+                @if (this.gameType?.id  === 2) {
                   <th class="px-4 py-3 text-right">Aciertos</th>
                   <th class="px-4 py-3 text-right">Racha</th>
                 } 
-                @if(selectedGameTypeId  === 3){
+                @if(this.gameType?.id  === 3){
                   <th class="px-4 py-3 text-right">Segundos</th>
                   <th class="px-4 py-3 text-right">Errores</th>
                 }
-                @if(selectedGameTypeId  === 4){
+                @if(this.gameType?.id  === 4){
                   <th class="px-4 py-3 text-right">Palabras acertadas</th>
                   <th class="px-4 py-3 text-right">Max. Racha</th>
                 }
@@ -72,19 +74,19 @@
                     <td class="px-4 py-3 font-medium">{{i + 1}}</td>
                     <td class="px-4 py-3">{{ item.username }}</td>
                     <td class="px-4 py-3 text-right">{{ item.score }}</td>
-                    @if(selectedGameTypeId  === 1){
+                    @if(this.gameType?.id  === 1){
                       <td class="px-4 py-3 text-right">{{ item.max_streak }}</td>
                       <td class="px-4 py-3 text-right">{{ item.cant_categories }}</td>
                     }
-                    @if(selectedGameTypeId  === 2){
+                    @if(this.gameType?.id  === 2){
                       <td class="px-4 py-3 text-right">{{ item.correct_guesses }}</td>
                       <td class="px-4 py-3 text-right">{{ item.streak }}</td>
                     }
-                    @if(selectedGameTypeId  === 3){
+                    @if(this.gameType?.id  === 3){
                       <td class="px-4 py-3 text-right">{{ item.time_seconds }}</td>
                       <td class="px-4 py-3 text-right">{{ item.errors }}</td>
                     }
-                    @if(selectedGameTypeId  === 4){
+                    @if(this.gameType?.id  === 4){
                       <td class="px-4 py-3 text-right">{{ item.words_guessed }}</td>
                       <td class="px-4 py-3 text-right">{{ item.max_streak_deftionary }}</td>
                     }
