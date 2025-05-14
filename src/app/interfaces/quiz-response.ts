@@ -1,5 +1,5 @@
-import { Question } from './Question';
+import { QuizInterface } from "./quiz-interface";
 
 export interface QuizResponse {
-  questions: Question[];
+  questions: QuizInterface[];
 }

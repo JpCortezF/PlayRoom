@@ -5,9 +5,9 @@ import { GameType } from '../../classes/game_type';
 import { DatabaseService } from '../../services/database.service';
 import { UserService } from '../../services/user.service';
 import { QuizApiService } from '../../services/quiz-api.service';
+import { QuizInterface } from '../../interfaces/quiz-interface';
 import { UserScore } from '../../classes/user_score';
 import { take } from 'rxjs/operators';
-import { Question } from '../../interfaces/Question';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 
@@ -48,7 +48,7 @@ export class PreguntadosComponent {
   currentCategory: string | null = null;
   currentQuestionIndex = 0;
   questionsAnsweredInCurrentCategory = 0;
-  currentQuestion: Question | null = null;
+  currentQuestion: QuizInterface | null = null;
   currentOptions: string[] = [];
   correctAnswer: string = '';
   selectedAnswer: string = '';
@@ -118,7 +118,7 @@ export class PreguntadosComponent {
   });
 }
 
-  setCurrentQuestion(question: Question) {
+  setCurrentQuestion(question: QuizInterface) {
     console.log('Pregunta recibida:', question); // Para depuración
     
     this.currentQuestion = question;

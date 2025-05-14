@@ -1,4 +1,4 @@
-export interface Question {
+export interface QuizInterface {
   question: string;
   correctAnswers: string;
   incorrectAnswers: string[];
