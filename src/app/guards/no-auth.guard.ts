@@ -7,9 +7,11 @@ export const noAuthGuard: CanActivateFn = async (route, state) => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  const user = await firstValueFrom(auth.currentUser$);
+  await auth.authReady;
 
-  if (user) {
+  const { data: { session } } = await auth.sb.supabase.auth.getSession();
+
+  if (session?.user) {
     router.navigate(['/']);
     return false;
   }

@@ -12,21 +12,20 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
   router = inject(Router);
+  authReady = this.initializeAuth();
   
-  constructor() { 
-    // Saber si el usuario ya está autenticado
-    this.initializeAuth();
-  }
 
-  private async initializeAuth() {
+  private async initializeAuth(): Promise<void> {
     const { data: { session } } = await this.sb.supabase.auth.getSession();
     this.currentUserSubject.next(session?.user || null);
-  
-    this.sb.supabase.auth.onAuthStateChange((event, session) => {
-      this.currentUserSubject.next(session?.user || null);
-      if (session?.user) {
-        this.router.navigate(['/']);
-      }
+
+    return new Promise<void>((resolve) => {
+      const { data: listener } = this.sb.supabase.auth.onAuthStateChange((_event, session) => {
+        this.currentUserSubject.next(session?.user || null);
+        resolve();
+      });
+
+      setTimeout(() => resolve(), 1000);
     });
   }
 
