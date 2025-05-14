@@ -12,4 +12,7 @@ export class CardsComponent {
   @Input() imageUrl!: string;
   @Input() gameName!: string;
   @Input() gameRoute!: string;
+  @Input() onCardClick!: () => void
+
+  
 }

@@ -1,12 +1,11 @@
 <div class="atropo-scale mx-auto flex flex-col items-center m-4 group hover:-translate-y-1 transition-all duration-300 ease-in-out">
-  <div class="rounded-lg overflow-hidden hover:shadow-[0_0_25px_8px_rgba(0,0,0,0.8)] transition-shadow">
-    <a [routerLink]="'/games/' + gameRoute.toLowerCase()">
-      <img
-        class="w-full h-40 md:h-52 object-contain rounded-xl cursor-pointer"
-        [src]="imageUrl"
-        alt="imagen del juego {{gameName}}" 
-      />
-    </a>
+  <div class="rounded-lg overflow-hidden hover:shadow-[0_0_25px_8px_rgba(0,0,0,0.8)] transition-shadow"
+    (click)="onCardClick()">
+    <img
+      class="w-full h-40 md:h-52 object-contain rounded-xl cursor-pointer"
+      [src]="imageUrl"
+      alt="imagen del juego {{gameName}}" 
+    />
   </div>
 
   <div class="p-4 text-center">

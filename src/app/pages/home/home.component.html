@@ -11,7 +11,8 @@
           <app-cards
             [imageUrl]="game.icon_url"
             [gameName]="game.name"
-            [gameRoute]="game.route_path">          
+            [gameRoute]="game.route_path"
+            [onCardClick]="handleGameClick.bind(this, game.route_path)">          
           </app-cards>
         }
       </div>
