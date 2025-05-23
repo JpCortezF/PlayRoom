@@ -82,7 +82,8 @@ export class PreguntadosComponent {
 
   handleCategoryCycle() {
     if (this.usedCategories.length === this.categories.length) {
-      this.usedCategories = [];     
+      this.usedCategories = [];
+      this.categories.forEach(category => category.used = false);
     }
     this.showCategorySelection = true;
   }
@@ -118,9 +119,7 @@ export class PreguntadosComponent {
   });
 }
 
-  setCurrentQuestion(question: QuizInterface) {
-    console.log('Pregunta recibida:', question); // Para depuración
-    
+  setCurrentQuestion(question: QuizInterface) {    
     this.currentQuestion = question;
     this.correctAnswer = question.correctAnswers;
     this.selectedAnswer = '';
@@ -161,7 +160,6 @@ export class PreguntadosComponent {
     this.answerSelected = true;
 
     const isCorrect = option === this.correctAnswer;
-    console.log(this.currentStreak)
     if (isCorrect) {
       this.score += this.currentStreak >= 3 ? 2 : 1;
       this.correctGuesses++;
@@ -225,7 +223,7 @@ export class PreguntadosComponent {
       title: '¡Juego Terminado!',
       html: `
         <div class="text-center">
-          <p class="text-2xl font-bold mb-4">Puntaje: <span class="text-blue-600">${this.score}</span></p>
+          <p class="text-2xl font-bold mb-4">Puntaje: <span class="text-blue-600">${this.score * this.cantCategories}</span></p>
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="bg-gray-100 p-3 rounded-lg">
               <p class="font-semibold">Respuestas correctas</p>
